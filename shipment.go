@@ -55,7 +55,7 @@ func AddShipmentData(req AddShipmentRequest) (AddShipmentResponse, error) {
 		ShipmentNumber: shipmentNumber,
 		Origin:         req.Origin,
 		Destination:    req.Destination,
-		LoadingDate:    req.LoadingDate,
+		LoadingDate:    req.LoadingDate.Format("2006-01-02"),
 	})
 	if err != nil {
 		log.Println("Failed AddShipmentData", err.Error())
