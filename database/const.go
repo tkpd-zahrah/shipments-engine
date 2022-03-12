@@ -34,8 +34,8 @@ var (
 
 const (
 	GetShipmentsDataQuery   = `SELECT * FROM shipments`
-	InsertShipmentDataQuery = `INSERT INTO shipments (shipment_number, origin, destination, loading_date) VALUES (
-		$1, $2, $3, $4
+	InsertShipmentDataQuery = `INSERT INTO shipments (shipment_number, origin, destination, loading_date, status) VALUES (
+		$1, $2, $3, $4, $5
 	)`
 	AllocateShipmentQuery = `UPDATE shipments SET 
 		license_number = $1,
@@ -47,6 +47,6 @@ const (
 		update_time = now()
 	WHERE shipment_number = $2`
 
-	GetShipmentsDataByShipmentsNumberQuery = GetShipmentsDataQuery + " where shipment_number in $(arr) limit $1 order by create_time"
+	GetShipmentsDataByShipmentsNumberQuery = GetShipmentsDataQuery + " where shipment_number in (arr) limit $1 order by create_time"
 	GetShipmentsAllDataQuery               = GetShipmentsDataQuery + " order by create_time"
 )

@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -27,7 +28,7 @@ func replaceGetQuery(limit int, params []string, query string) string {
 		}
 	}
 
-	res := strings.Replace(query, "$arr", strParam, -1)
+	res := strings.Replace(query, "arr", strParam, -1)
 	res = strings.Replace(res, "$1", fmt.Sprint(limit), -1)
 	return res
 }
@@ -43,7 +44,9 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 
 	var rows *sql.Rows
 	if len(shipmentNumbers) > 0 && max > 0 {
-		rows, err := s.db.Query(replaceGetQuery(max, shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
+		query := replaceGetQuery(max, shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery)
+		log.Println(query)
+		rows, err := s.db.Query(query)
 		if err != nil {
 			return []Shipment{}, err
 		}
@@ -67,7 +70,7 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 }
 
 func (s *ShipmentResource) InsertShipmentData(param AddShipmentParam) error {
-	if _, err := s.db.Exec(InsertShipmentDataQuery, param.ShipmentNumber, param.Origin, param.Destination, param.LoadingDate); err != nil {
+	if _, err := s.db.Exec(InsertShipmentDataQuery, param.ShipmentNumber, param.Origin, param.Destination, param.LoadingDate, ShipmentStatusMap[ShipmentStatusCreatedStr]); err != nil {
 		return err
 	}
 	return nil
