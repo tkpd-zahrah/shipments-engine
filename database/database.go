@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"errors"
+	"log"
 )
 
 type ShipmentsDomain interface {
@@ -13,7 +13,8 @@ type ShipmentsDomain interface {
 }
 
 type ShipmentResource struct {
-	db *sql.DB
+	db   *sql.DB
+	stmt *sql.Stmt
 }
 
 // build query param
@@ -29,24 +30,26 @@ func buildQueryParam(param []interface{}) string {
 }
 
 func InitShipment(database *sql.DB) *ShipmentResource {
+	stmt, err := database.Prepare(GetShipmentsDataByShipmentsNumberQuery)
+	if err != nil {
+		log.Println("failed to prepare statement")
+	}
+
 	return &ShipmentResource{
-		db: database,
+		db:   database,
+		stmt: stmt,
 	}
 }
 
 func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string) ([]Shipment, error) {
 	shipments := make([]Shipment, len(shipmentNumbers))
-	stmt, err := s.db.Prepare(GetShipmentsDataByShipmentsNumberQuery)
-	if err != nil {
-		return []Shipment{}, errors.New("failed to prepare statement")
-	}
 
 	queryParams := make([]interface{}, len(shipmentNumbers))
 	for _, snumber := range shipmentNumbers {
 		queryParams = append(queryParams, snumber)
 	}
 
-	rows, err := stmt.Query(buildQueryParam(queryParams))
+	rows, err := s.stmt.Query(buildQueryParam(queryParams))
 	if err != nil {
 		return []Shipment{}, err
 	}
