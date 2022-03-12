@@ -14,10 +14,10 @@ type (
 	}
 
 	AddShipmentParam struct {
-		ShipmentNumber string `json:"shipment_number"`
-		Origin         string `json:"origin"`
-		Destination    string `json:"destination"`
-		LoadingDate    string `json:"loading_date"`
+		ShipmentNumber string    `json:"shipment_number"`
+		Origin         string    `json:"origin"`
+		Destination    string    `json:"destination"`
+		LoadingDate    time.Time `json:"loading_date"`
 	}
 
 	AllocationParam struct {
