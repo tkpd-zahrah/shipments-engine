@@ -40,11 +40,10 @@ func InitShipment(database *sql.DB) *ShipmentResource {
 }
 
 func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) ([]Shipment, error) {
-	shipments := make([]Shipment, len(shipmentNumbers))
+	shipments := make([]Shipment, 0)
 
 	if len(shipmentNumbers) > 0 && max > 0 {
 		query := replaceGetQuery(max, shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery)
-		log.Println(query)
 		rows, err := s.db.Query(query)
 		if err != nil {
 			return []Shipment{}, err
@@ -87,6 +86,7 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 		}
 	}
 
+	log.Println(shipments)
 	return shipments, nil
 }
 
