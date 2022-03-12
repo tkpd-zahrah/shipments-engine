@@ -9,7 +9,7 @@ import (
 )
 
 func GetShipmentsData(req GetShipmentsDataRequest) (GetShipmentsDataResponse, error) {
-	shipmentsData, err := rsc.GetShipmentsData(req.ShipmentNumbers)
+	shipmentsData, err := rsc.GetShipmentsData(req.ShipmentNumbers, req.Max)
 	if err != nil {
 		log.Println("Failed GetShipmentsData", err.Error())
 		return GetShipmentsDataResponse{
@@ -74,5 +74,51 @@ func AddShipmentData(req AddShipmentRequest) (AddShipmentResponse, error) {
 			Code:   "200",
 		},
 		ShipmentNumber: shipmentNumber,
+	}, nil
+}
+
+func AllocateShipment(req AllocationRequest) (AllocationResponse, error) {
+	err := rsc.AllocateShipment(database.AllocationParam{
+		ShipmentNumber:     req.ShipmentNumber,
+		TruckLicenseNumber: req.TruckLicenseNumber,
+		DriverName:         req.DriverName,
+	})
+	if err != nil {
+		log.Println("Failed AllocateShipment", err.Error())
+		return AllocationResponse{
+			Result: ResultStatus{
+				Status:  "ERROR",
+				Code:    "100003",
+				Message: err.Error(),
+			},
+		}, err
+	}
+
+	return AllocationResponse{
+		Result: ResultStatus{
+			Status: "OK",
+			Code:   "200",
+		},
+	}, nil
+}
+
+func UpdateStatusShipment(req UpdateStatusShipmentRequest) (UpdateStatusShipmentResponse, error) {
+	err := rsc.UpdateStatusShipment(database.ShipmentStatusMap[req.Status], req.ShipmentNumber)
+	if err != nil {
+		log.Println("Failed UpdateStatusShipment", err.Error())
+		return UpdateStatusShipmentResponse{
+			Result: ResultStatus{
+				Status:  "ERROR",
+				Code:    "100004",
+				Message: err.Error(),
+			},
+		}, err
+	}
+
+	return UpdateStatusShipmentResponse{
+		Result: ResultStatus{
+			Status: "OK",
+			Code:   "200",
+		},
 	}, nil
 }

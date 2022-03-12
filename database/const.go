@@ -47,5 +47,6 @@ const (
 		update_time = now()
 	WHERE shipment_number = $2`
 
-	GetShipmentsDataByShipmentsNumberQuery = GetShipmentsDataQuery + " where in $(arr1)"
+	GetShipmentsDataByShipmentsNumberQuery = GetShipmentsDataQuery + " where shipment_number in $(arr) limit $1 order by create_time"
+	GetShipmentsAllDataQuery               = GetShipmentsDataQuery + " order by create_time"
 )

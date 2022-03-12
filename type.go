@@ -47,9 +47,24 @@ type (
 		ShipmentNumber string       `json:"shipment_number"`
 	}
 
-	AllocationParam struct {
+	// ALOCATE SHIPMENT
+	AllocationRequest struct {
 		ShipmentNumber     string `json:"shipment_number"`
-		TruckLicenseNumber string `json:"truck_license_number"`
-		DriverName         string `json:"driver_name"`
+		TruckLicenseNumber string `json:"truck"`
+		DriverName         string `json:"driver"`
+	}
+
+	AllocationResponse struct {
+		Result ResultStatus `json:"result"`
+	}
+
+	// UPDATE STATUS SHIPMENT
+	UpdateStatusShipmentRequest struct {
+		ShipmentNumber string `json:"shipment_number"`
+		Status         string `json:"status"`
+	}
+
+	UpdateStatusShipmentResponse struct {
+		Result ResultStatus `json:"result"`
 	}
 )

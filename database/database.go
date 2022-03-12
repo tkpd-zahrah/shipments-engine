@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"fmt"
 	"strings"
 )
 
@@ -17,7 +18,7 @@ type ShipmentResource struct {
 	stmt *sql.Stmt
 }
 
-func replaceInQuery(params []string, query string) string {
+func replaceGetQuery(limit int, params []string, query string) string {
 	strParam := ""
 	for i, p := range params {
 		strParam += p
@@ -26,7 +27,9 @@ func replaceInQuery(params []string, query string) string {
 		}
 	}
 
-	return strings.Replace(query, "$arr", strParam, -1)
+	res := strings.Replace(query, "$arr", strParam, -1)
+	res = strings.Replace(res, "$1", fmt.Sprint(limit), -1)
+	return res
 }
 
 func InitShipment(database *sql.DB) *ShipmentResource {
@@ -35,14 +38,24 @@ func InitShipment(database *sql.DB) *ShipmentResource {
 	}
 }
 
-func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string) ([]Shipment, error) {
+func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) ([]Shipment, error) {
 	shipments := make([]Shipment, len(shipmentNumbers))
 
-	rows, err := s.db.Query(replaceInQuery(shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
-	if err != nil {
-		return []Shipment{}, err
+	var rows *sql.Rows
+	if len(shipmentNumbers) > 0 && max > 0 {
+		rows, err := s.db.Query(replaceGetQuery(max, shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
+		if err != nil {
+			return []Shipment{}, err
+		}
+		defer rows.Close()
+	} else {
+		rows, err := s.db.Query(GetShipmentsAllDataQuery)
+		if err != nil {
+			return []Shipment{}, err
+		}
+		defer rows.Close()
 	}
-	defer rows.Close()
+
 	for rows.Next() {
 		var shipment Shipment
 		if err := rows.Scan(&shipment); err != nil {

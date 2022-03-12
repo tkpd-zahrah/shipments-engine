@@ -66,5 +66,29 @@ func main() {
 		c.JSON(200, resp)
 	})
 
+	router.POST("/shipments/allocate", func(c *gin.Context) {
+		var req AllocationRequest
+		c.BindJSON(&req)
+		resp, err := AllocateShipment(req)
+		if err != nil {
+			c.JSON(404, err.Error())
+			return
+		}
+
+		c.JSON(200, resp)
+	})
+
+	router.POST("/shipments/update_status", func(c *gin.Context) {
+		var req UpdateStatusShipmentRequest
+		c.BindJSON(&req)
+		resp, err := UpdateStatusShipment(req)
+		if err != nil {
+			c.JSON(404, err.Error())
+			return
+		}
+
+		c.JSON(200, resp)
+	})
+
 	router.Run(":" + port)
 }
