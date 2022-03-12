@@ -25,7 +25,7 @@ func GetShipmentsData(req GetShipmentsDataRequest) (GetShipmentsDataResponse, er
 }
 
 func generateGetShipmentsDataResponse(shipmentsData []database.Shipment) GetShipmentsDataResponse {
-	shipments := make([]Shipment, len(shipmentsData))
+	shipments := make([]Shipment, 0)
 	for _, data := range shipmentsData {
 		shipments = append(shipments, Shipment{
 			ShipmentNumber: data.ShipmentNumber,
