@@ -38,7 +38,7 @@ func InitShipment(database *sql.DB) *ShipmentResource {
 func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string) ([]Shipment, error) {
 	shipments := make([]Shipment, len(shipmentNumbers))
 
-	rows, err := s.stmt.Query(replaceInQuery(shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
+	rows, err := s.db.Query(replaceInQuery(shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
 	if err != nil {
 		return []Shipment{}, err
 	}
