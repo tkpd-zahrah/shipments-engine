@@ -2,7 +2,7 @@ package database
 
 import (
 	"database/sql"
-	"log"
+	"strings"
 )
 
 type ShipmentsDomain interface {
@@ -17,39 +17,28 @@ type ShipmentResource struct {
 	stmt *sql.Stmt
 }
 
-// build query param
-func buildQueryParam(param []interface{}) string {
-	var res string
-	for i, s := range param {
-		res += s.(string)
-		if i != len(param)-1 {
-			res += ","
+func replaceInQuery(params []string, query string) string {
+	strParam := ""
+	for i, p := range params {
+		strParam += p
+		if i != len(params)-1 {
+			strParam += ","
 		}
 	}
-	return res
+
+	return strings.Replace(query, "$arr", strParam, -1)
 }
 
 func InitShipment(database *sql.DB) *ShipmentResource {
-	stmt, err := database.Prepare(GetShipmentsDataByShipmentsNumberQuery)
-	if err != nil {
-		log.Println("failed to prepare statement")
-	}
-
 	return &ShipmentResource{
-		db:   database,
-		stmt: stmt,
+		db: database,
 	}
 }
 
 func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string) ([]Shipment, error) {
 	shipments := make([]Shipment, len(shipmentNumbers))
 
-	queryParams := make([]interface{}, len(shipmentNumbers))
-	for _, snumber := range shipmentNumbers {
-		queryParams = append(queryParams, snumber)
-	}
-
-	rows, err := s.stmt.Query(buildQueryParam(queryParams))
+	rows, err := s.stmt.Query(replaceInQuery(shipmentNumbers, GetShipmentsDataByShipmentsNumberQuery))
 	if err != nil {
 		return []Shipment{}, err
 	}
