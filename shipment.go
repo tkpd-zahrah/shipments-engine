@@ -50,6 +50,7 @@ func generateGetShipmentsDataResponse(shipmentsData []database.Shipment) GetShip
 
 func AddShipmentData(req AddShipmentRequest) (AddShipmentResponse, error) {
 	shipmentNumber := "Kargo" + fmt.Sprint(time.Now().Unix())
+	log.Println("req", req)
 
 	err := rsc.InsertShipmentData(database.AddShipmentParam{
 		ShipmentNumber: shipmentNumber,

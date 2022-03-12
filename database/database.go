@@ -86,11 +86,11 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 		}
 	}
 
-	log.Println(shipments)
 	return shipments, nil
 }
 
 func (s *ShipmentResource) InsertShipmentData(param AddShipmentParam) error {
+	log.Println(param)
 	if _, err := s.db.Exec(InsertShipmentDataQuery, param.ShipmentNumber, param.Origin, param.Destination, param.LoadingDate, ShipmentStatusMap[ShipmentStatusCreatedStr]); err != nil {
 		return err
 	}
