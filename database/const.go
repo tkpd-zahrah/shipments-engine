@@ -33,7 +33,9 @@ var (
 )
 
 const (
-	GetShipmentsDataQuery   = `SELECT * FROM shipments`
+	GetShipmentsDataQuery = `SELECT 
+			shipment_number, license_number, driver_name, origin, destination, loading_date, status
+		FROM shipments`
 	InsertShipmentDataQuery = `INSERT INTO shipments (shipment_number, origin, destination, loading_date, status) VALUES (
 		$1, $2, $3, $4, $5
 	)`

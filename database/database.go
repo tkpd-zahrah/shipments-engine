@@ -22,7 +22,7 @@ type ShipmentResource struct {
 func replaceGetQuery(limit int, params []string, query string) string {
 	strParam := ""
 	for i, p := range params {
-		strParam += p
+		strParam += "'" + p + "'"
 		if i != len(params)-1 {
 			strParam += ","
 		}
@@ -52,7 +52,15 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 		defer rows.Close()
 		for rows.Next() {
 			var shipment Shipment
-			if err := rows.Scan(&shipment); err != nil {
+			if err := rows.Scan(
+				&shipment.ShipmentNumber,
+				&shipment.LicenseNumber,
+				&shipment.DriverName,
+				&shipment.Origin,
+				&shipment.Destination,
+				&shipment.LoadingDate,
+				&shipment.Status,
+			); err != nil {
 				return []Shipment{}, err
 			}
 			shipments = append(shipments, shipment)
@@ -65,7 +73,14 @@ func (s *ShipmentResource) GetShipmentsData(shipmentNumbers []string, max int) (
 		defer rows.Close()
 		for rows.Next() {
 			var shipment Shipment
-			if err := rows.Scan(&shipment); err != nil {
+			if err := rows.Scan(&shipment.ShipmentNumber,
+				&shipment.LicenseNumber,
+				&shipment.DriverName,
+				&shipment.Origin,
+				&shipment.Destination,
+				&shipment.LoadingDate,
+				&shipment.Status,
+			); err != nil {
 				return []Shipment{}, err
 			}
 			shipments = append(shipments, shipment)
