@@ -1,0 +1,13 @@
+{
+    "name": "Shipments Engine",
+    "description": "Engine for Shipments Data",
+    "keywords": [
+      "getting-started",
+      "go",
+      "sample",
+      "example"
+    ],
+    "website": "https://github.com/zahrahfebriani/shipments-engine",
+    "repository": "https://github.com/zahrahfebriani/shipments-engine"
+  }
+  
