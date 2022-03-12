@@ -34,16 +34,25 @@ var (
 
 const (
 	GetShipmentsDataQuery = `SELECT 
-			shipment_number, license_number, driver_name, origin, destination, loading_date, status
+			COALESCE(shipment_number, '') as shipment_number,
+			COALESCE(license_number, '') as license_number,
+			COALESCE(driver_name, '') as driver_name,
+			COALESCE(origin, '') as origin, 
+			COALESCE(destination, '') as destination, 
+			COALESCE(loading_date, '0001-01-01T00:00:00Z'::timestamp) as loading_date, 
+			COALESCE(status, 0) as status
 		FROM shipments`
+
 	InsertShipmentDataQuery = `INSERT INTO shipments (shipment_number, origin, destination, loading_date, status) VALUES (
 		$1, $2, $3, $4, $5
 	)`
+
 	AllocateShipmentQuery = `UPDATE shipments SET 
 		license_number = $1,
 		driver_name = $2,
 		update_time = now()
 	WHERE shipment_number = $3`
+
 	UpdateShipmentStatusQuery = `UPDATE shipments SET 
 		status = $1,
 		update_time = now()
