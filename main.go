@@ -16,6 +16,23 @@ import (
 
 var rsc *database.ShipmentResource
 
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Credentials", "true")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
+
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+
+		c.Next()
+	}
+}
+
 func main() {
 	err := godotenv.Load(filepath.Join(".", ".env"))
 	if err != nil {
@@ -30,6 +47,7 @@ func main() {
 
 	router := gin.New()
 	router.Use(gin.Logger())
+	router.Use(CORSMiddleware())
 
 	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
 	if err != nil {
@@ -43,16 +61,6 @@ func main() {
 	rsc = database.InitShipment(db)
 
 	router.POST("/shipments/get", func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
 		var req GetShipmentsDataRequest
 		c.BindJSON(&req)
 		resp, err := GetShipmentsData(req)
@@ -65,16 +73,6 @@ func main() {
 	})
 
 	router.POST("/shipments/add", func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
 		var req AddShipmentRequest
 		c.BindJSON(&req)
 		resp, err := AddShipmentData(req)
@@ -87,16 +85,6 @@ func main() {
 	})
 
 	router.POST("/shipments/allocate", func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
 		var req AllocationRequest
 		c.BindJSON(&req)
 		resp, err := AllocateShipment(req)
@@ -109,16 +97,6 @@ func main() {
 	})
 
 	router.POST("/shipments/update_status", func(c *gin.Context) {
-		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Writer.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
 		var req UpdateStatusShipmentRequest
 		c.BindJSON(&req)
 		resp, err := UpdateStatusShipment(req)
